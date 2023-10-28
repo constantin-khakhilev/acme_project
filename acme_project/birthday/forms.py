@@ -1,8 +1,8 @@
 from django import forms
 # Импортируем класс ошибки валидации.
 from django.core.exceptions import ValidationError
-from .models import Birthday
 
+from .models import Birthday
 # Импортируем функцию-валидатор.
 from .validators import real_age
 
