@@ -1,40 +1,45 @@
 
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.generic import (
+    CreateView, DeleteView, DetailView, ListView, UpdateView
+)
 
 from .forms import BirthdayForm
 from .models import Birthday
+from .utils import calculate_birthday_countdown
 
 
-class BirthdayMixin:
-    """Миксин, который передаёт модель и ссылку."""
+class BirthdayListView(ListView):
+    model = Birthday
+    ordering = 'id'
+    paginate_by = 10
+
+
+class BirthdayCreateView(CreateView):
+    model = Birthday
+    form_class = BirthdayForm
+
+
+class BirthdayUpdateView(UpdateView):
+    model = Birthday
+    form_class = BirthdayForm
+
+
+class BirthdayDeleteView(DeleteView):
     model = Birthday
     success_url = reverse_lazy('birthday:list')
 
 
-class BirthdayFormMixin:
-    """Миксин, который передаёт форму."""
-    form_class = BirthdayForm
-    template_name = 'birthday/birthday.html'
-
-
-class BirthdayCreateView(BirthdayMixin, BirthdayFormMixin, CreateView):
-    pass
-
-
-class BirthdayUpdateView(BirthdayMixin, BirthdayFormMixin, UpdateView):
-    pass
-
-
-class BirthdayDeleteView(BirthdayMixin, DeleteView):
-    pass
-
-
-# Наследуем класс от встроенного ListView:
-class BirthdayListView(ListView):
-    # Указываем модель, с которой работает CBV...
+class BirthdayDetailView(DetailView):
     model = Birthday
-    # ...сортировку, которая будет применена при выводе списка объектов:
-    ordering = 'id'
-    # ...и даже настройки пагинации:
-    paginate_by = 10
+
+    def get_context_data(self, **kwargs):
+        # Получаем словарь контекста:
+        context = super().get_context_data(**kwargs)
+        # Добавляем в словарь новый ключ:
+        context['birthday_countdown'] = calculate_birthday_countdown(
+            # Дату рождения берём из объекта в словаре context:
+            self.object.birthday
+        )
+        # Возвращаем словарь контекста.
+        return context
