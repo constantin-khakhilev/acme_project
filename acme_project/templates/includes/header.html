@@ -24,7 +24,7 @@
 
           <!-- Это блок ссылок для авторизованного пользователя -->
           {% if user.is_authenticated %}
-          <span class="navbar-text">Пользователь: <b>Логин пользователя</b></span>        
+          <span class="navbar-text">Пользователь: <b>{{ user.username }}</b></span>        
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
           </li>
