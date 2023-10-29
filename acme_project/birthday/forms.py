@@ -50,7 +50,6 @@ class BirthdayForm(forms.ModelForm):
             )
 
 
-
 """
 class BirthdayForm(forms.Form):
     first_name = forms.CharField(label='Имя', max_length=20)
