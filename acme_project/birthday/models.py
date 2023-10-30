@@ -7,6 +7,13 @@ from .validators import real_age
 User = get_user_model()
 
 
+class Tag(models.Model):
+    tag = models.CharField('Тег', max_length=20)
+
+    def __str__(self):
+        return self.tag
+
+
 class Birthday(models.Model):
     first_name = models.CharField('Имя', max_length=20)
     last_name = models.CharField(
@@ -21,6 +28,12 @@ class Birthday(models.Model):
     author = models.ForeignKey(
         User, verbose_name='Автор записи', on_delete=models.CASCADE, null=True
     )
+    tags = models.ManyToManyField(
+        Tag,
+        verbose_name='Теги',
+        blank=True,
+        help_text='Удерживайте Ctrl для выбора нескольких вариантов'
+    )
 
     class Meta:
         constraints = (
@@ -29,6 +42,9 @@ class Birthday(models.Model):
                 name='Unique person constraint',
             ),
         )
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
 
     def get_absolute_url(self):
         # С помощью функции reverse() возвращаем URL объекта.
